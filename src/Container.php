@@ -2,10 +2,10 @@
 
 namespace Rescue\Container;
 
-use Rescue\Container\Exception\ContainerNotFoundException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use Rescue\Container\Exception\ContainerNotFoundException;
 use function count;
 use function is_string;
 
@@ -22,6 +22,36 @@ class Container implements ContainerInterface
     public function append(string $id, string $className = null, array $params = [])
     {
         return $this->storage[$id] = $this->instance($className ?? $id, $params);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function get(string $id)
+    {
+        if (!$this->has($id)) {
+            throw new ContainerNotFoundException("Entry $id not found");
+        }
+
+        return $this->storage[$id];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function has(string $id): bool
+    {
+        return isset($this->storage[$id]);
+    }
+
+    /**
+     * @param string $id
+     * @param callable $callback
+     * @return object
+     */
+    public function appendByCallback(string $id, callable $callback)
+    {
+        return $this->storage[$id] = $callback($this);
     }
 
     /**
@@ -75,36 +105,6 @@ class Container implements ContainerInterface
         }
 
         return $params;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function get(string $id)
-    {
-        if (!$this->has($id)) {
-            throw new ContainerNotFoundException("Entry $id not found");
-        }
-
-        return $this->storage[$id];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function has(string $id): bool
-    {
-        return isset($this->storage[$id]);
-    }
-
-    /**
-     * @param string $id
-     * @param callable $callback
-     * @return object
-     */
-    public function appendByCallback(string $id, callable $callback)
-    {
-        return $this->storage[$id] = $callback($this);
     }
 
     /**
