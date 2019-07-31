@@ -1,6 +1,7 @@
 {
     "name": "rescuephp/container",
     "description": "DI containers library",
+    "version": "1.0.0",
     "type": "library",
     "license": "MIT",
     "authors": [
