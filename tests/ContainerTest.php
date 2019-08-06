@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rescue\Tests\Container;
 
 use PHPUnit\Framework\TestCase;
@@ -16,7 +18,6 @@ final class ContainerTest extends TestCase
 {
     /**
      * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
     public function testContainerAlias(): void
@@ -31,7 +32,6 @@ final class ContainerTest extends TestCase
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
     public function testParams(): void
@@ -54,7 +54,6 @@ final class ContainerTest extends TestCase
 
     /**
      * @throws ReflectionException
-     * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
     public function testParamsInstance(): void
@@ -74,7 +73,6 @@ final class ContainerTest extends TestCase
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
     public function testContainerAutoParams(): void
@@ -97,7 +95,6 @@ final class ContainerTest extends TestCase
 
     /**
      * @throws ReflectionException
-     * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
     public function testContainerAutoParamsAndInstance(): void
@@ -113,7 +110,6 @@ final class ContainerTest extends TestCase
     }
 
     /**
-     * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
     public function testNotFoundException(): void
@@ -126,42 +122,7 @@ final class ContainerTest extends TestCase
     }
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
-    public function testAppendByCallback(): void
-    {
-        $container = new Container();
-
-        $container->appendByCallback('test', static function () {
-            return new Foo();
-        });
-
-        $instance = $container->get('test');
-        $this->assertInstanceOf(Foo::class, $instance);
-    }
-
-    /**
      * @throws ReflectionException
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
-    public function testAppendByCallbackAndGetFromContainer(): void
-    {
-        $container = new Container();
-        $container->append(Foo::class);
-
-        $container->appendByCallback(Bar::class, static function (Container $container) {
-            return new Bar($container->get(Foo::class));
-        });
-
-        $instance = $container->get(Bar::class);
-        $this->assertInstanceOf(Bar::class, $instance);
-    }
-
-    /**
-     * @throws ReflectionException
-     * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
     public function testAutoInterfaceAppend(): void
@@ -177,7 +138,6 @@ final class ContainerTest extends TestCase
 
     /**
      * @throws ReflectionException
-     * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
     public function testNullableParams(): void
@@ -194,7 +154,6 @@ final class ContainerTest extends TestCase
 
     /**
      * @throws ReflectionException
-     * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
     public function testNullableParamsWithParams(): void

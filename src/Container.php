@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rescue\Container;
 
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use Rescue\Container\Exception\ContainerExceptionInterface;
 use Rescue\Container\Exception\ContainerNotFoundException;
 use function count;
 use function is_string;
@@ -18,6 +22,7 @@ class Container implements ContainerInterface
 
     /**
      * @inheritDoc
+     * @throws ReflectionException
      */
     public function append(string $id, string $className = null, array $params = [])
     {
@@ -26,8 +31,9 @@ class Container implements ContainerInterface
 
     /**
      * @inheritDoc
+     * @throws ContainerExceptionInterface
      */
-    public function get(string $id)
+    public function get($id)
     {
         if (!$this->has($id)) {
             throw new ContainerNotFoundException("Entry $id not found");
@@ -39,19 +45,9 @@ class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    public function has(string $id): bool
+    public function has($id): bool
     {
         return isset($this->storage[$id]);
-    }
-
-    /**
-     * @param string $id
-     * @param callable $callback
-     * @return object
-     */
-    public function appendByCallback(string $id, callable $callback)
-    {
-        return $this->storage[$id] = $callback($this);
     }
 
     /**
