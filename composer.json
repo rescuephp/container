@@ -1,5 +1,5 @@
 {
-    "name": "rescue/container",
+    "name": "rescuephp/container",
     "description": "Dependency Injection Container library",
     "type": "library",
     "license": "MIT",
