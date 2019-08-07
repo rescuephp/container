@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rescue\Container;
 
+use Psr\Container\ContainerExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
-use Rescue\Container\Exception\ContainerExceptionInterface;
 use Rescue\Container\Exception\ContainerNotFoundException;
 use function count;
 use function is_string;

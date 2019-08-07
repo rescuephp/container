@@ -1,7 +1,6 @@
 {
-    "name": "rescuephp/container",
-    "description": "DI containers library",
-    "version": "1.0.3",
+    "name": "rescue/container",
+    "description": "Dependency Injection Container library",
     "type": "library",
     "license": "MIT",
     "authors": [

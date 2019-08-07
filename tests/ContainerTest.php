@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Rescue\Tests\Container;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use Rescue\Container\Container;
-use Rescue\Container\Exception\ContainerExceptionInterface;
-use Rescue\Container\Exception\NotFoundExceptionInterface;
 
 interface TestInterface
 {
