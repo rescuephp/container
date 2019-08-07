@@ -24,7 +24,7 @@ final class ContainerTest extends TestCase
     {
         $container = new Container();
 
-        $container->append('foo', Foo::class);
+        $container->add('foo', Foo::class);
 
         $this->assertTrue($container->has('foo'));
         $this->assertInstanceOf(Foo::class, $container->get('foo'));
@@ -38,8 +38,8 @@ final class ContainerTest extends TestCase
     {
         $container = new Container();
 
-        $container->append(Foo::class);
-        $container->append(Bar::class, Bar::class, [Foo::class]);
+        $container->add(Foo::class);
+        $container->add(Bar::class, Bar::class, [Foo::class]);
 
         $this->assertTrue($container->has(Foo::class));
         $this->assertTrue($container->has(Bar::class));
@@ -60,7 +60,7 @@ final class ContainerTest extends TestCase
     {
         $container = new Container();
 
-        $container->append(Bar::class, Bar::class, [new Foo()]);
+        $container->add(Bar::class, Bar::class, [new Foo()]);
 
         $this->assertTrue($container->has(Bar::class));
 
@@ -79,8 +79,8 @@ final class ContainerTest extends TestCase
     {
         $container = new Container();
 
-        $container->append(Foo::class);
-        $container->append(Bar::class);
+        $container->add(Foo::class);
+        $container->add(Bar::class);
 
         $this->assertTrue($container->has(Foo::class));
         $this->assertTrue($container->has(Bar::class));
@@ -102,7 +102,7 @@ final class ContainerTest extends TestCase
         $container = new Container();
 
         /** @var Bar $bar */
-        $bar = $container->append(Bar::class);
+        $bar = $container->add(Bar::class);
 
         $this->assertInstanceOf(Bar::class, $bar);
         $this->assertInstanceOf(Foo::class, $bar->foo);
@@ -125,11 +125,11 @@ final class ContainerTest extends TestCase
      * @throws ReflectionException
      * @throws ContainerExceptionInterface
      */
-    public function testAutoInterfaceAppend(): void
+    public function testAutoInterfaceadd(): void
     {
         $container = new Container();
-        $container->append(TestInterface::class, TestClass::class);
-        $test2 = $container->append(TestClass2::class);
+        $container->add(TestInterface::class, TestClass::class);
+        $test2 = $container->add(TestClass2::class);
 
         $this->assertInstanceOf(TestClass2::class, $test2);
         $this->assertInstanceOf(TestInterface::class, $test2->test);
@@ -145,7 +145,7 @@ final class ContainerTest extends TestCase
         $container = new Container();
 
         /** @var TestClass3 $instance */
-        $instance = $container->append(TestClass3::class);
+        $instance = $container->add(TestClass3::class);
 
         $this->assertInstanceOf(TestClass3::class, $container->get(TestClass3::class));
         $this->assertInstanceOf(Foo::class, $instance->foo);
@@ -161,7 +161,7 @@ final class ContainerTest extends TestCase
         $container = new Container();
 
         /** @var TestClass3 $instance */
-        $instance = $container->append(TestClass3::class, TestClass3::class, [
+        $instance = $container->add(TestClass3::class, TestClass3::class, [
             new Foo(),
             new Bar(new Foo()),
         ]);
@@ -179,19 +179,48 @@ final class ContainerTest extends TestCase
         $container = new Container();
 
         /** @var TestClass4 $instance */
-        $instance = $container->append(TestClass4::class, TestClass4::class, ['asdf']);
+        $instance = $container->add(TestClass4::class, TestClass4::class, ['asdf']);
 
         $this->assertEquals('asdf', $instance->foo);
 
         /** @var TestClass5 $instance */
-        $instance = $container->append(TestClass5::class, TestClass5::class, [false]);
+        $instance = $container->add(TestClass5::class, TestClass5::class, [false]);
 
         $this->assertEquals(false, $instance->foo);
 
         /** @var TestClass6 $instance */
-        $instance = $container->append(TestClass6::class, TestClass6::class, [45]);
+        $instance = $container->add(TestClass6::class, TestClass6::class, [45]);
 
         $this->assertEquals(45, $instance->foo);
+    }
+
+
+    /**
+     * @throws ContainerExceptionInterface
+     */
+    public function testAddByCallback(): void
+    {
+        $container = new Container();
+        $container->addInstance('test', static function () {
+            return new Foo();
+        });
+        $instance = $container->get('test');
+        $this->assertInstanceOf(Foo::class, $instance);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+     */
+    public function testAddByCallbackAndGetFromContainer(): void
+    {
+        $container = new Container();
+        $container->add(Foo::class);
+        $container->addInstance(Bar::class, static function (Container $container) {
+            return new Bar($container->get(Foo::class));
+        });
+        $instance = $container->get(Bar::class);
+        $this->assertInstanceOf(Bar::class, $instance);
     }
 }
 

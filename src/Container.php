@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rescue\Container;
 
-use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -22,11 +21,22 @@ class Container implements ContainerInterface
 
     /**
      * @inheritDoc
-     * @throws ReflectionException
      */
-    public function append(string $id, string $className = null, array $params = [])
+    public function add(string $id, string $className = null, array $params = [])
     {
         return $this->storage[$id] = $this->instance($className ?? $id, $params);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addInstance(string $id, $instance)
+    {
+        if (is_callable($instance)) {
+            return $this->storage[$id] = $instance($this);
+        }
+
+        return $this->storage[$id] = $instance;
     }
 
     /**
@@ -54,6 +64,7 @@ class Container implements ContainerInterface
      * @param ReflectionClass $reflect
      * @param array $params
      * @return array
+     *
      * @throws ReflectionException
      */
     private function resolveDependencies(ReflectionClass $reflect, array $params = []): array
@@ -88,7 +99,7 @@ class Container implements ContainerInterface
                     continue;
                 }
 
-                $this->append($param);
+                $this->add($param);
 
                 foreach ($this->storage as $object) {
                     if ($object instanceof $param) {
