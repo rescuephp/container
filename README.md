@@ -2,4 +2,6 @@
 
 
 ### Install
-`composer require rescuephp/container`
+```
+composer require rescuephp/container
+```
