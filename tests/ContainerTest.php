@@ -125,7 +125,7 @@ final class ContainerTest extends TestCase
      * @throws ReflectionException
      * @throws ContainerExceptionInterface
      */
-    public function testAutoInterfaceadd(): void
+    public function testAutoInterfaceAdd(): void
     {
         $container = new Container();
         $container->add(TestInterface::class, TestClass::class);
@@ -221,6 +221,14 @@ final class ContainerTest extends TestCase
         });
         $instance = $container->get(Bar::class);
         $this->assertInstanceOf(Bar::class, $instance);
+    }
+
+    public function testAddInstance(): void
+    {
+        $container = new Container();
+        $foo = new Foo();
+        $instance = $container->addInstance(Foo::class, $foo);
+        $this->assertEquals($foo, $instance);
     }
 }
 
