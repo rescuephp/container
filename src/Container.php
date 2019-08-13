@@ -71,42 +71,44 @@ class Container implements ContainerInterface
     {
         $constructor = $reflect->getConstructor();
 
-        if ($constructor instanceof ReflectionMethod) {
-            if (count($params) < $constructor->getNumberOfRequiredParameters()) {
-                foreach ($constructor->getParameters() as $constructParam) {
-                    if ($constructParam->allowsNull()
-                        || $constructParam->getType() === null
-                    ) {
-                        continue;
-                    }
+        if (!$constructor instanceof ReflectionMethod) {
+            return $params;
+        }
 
-                    $params[] = $constructParam->getType()->getName();
+        if (count($params) < $constructor->getNumberOfRequiredParameters()) {
+            foreach ($constructor->getParameters() as $constructParam) {
+                if ($constructParam->allowsNull()
+                    || $constructParam->getType() === null
+                ) {
+                    continue;
                 }
+
+                $params[] = $constructParam->getType()->getName();
+            }
+        }
+
+        foreach ($params as &$param) {
+            if (!is_string($param)) {
+                continue;
             }
 
-            foreach ($params as &$param) {
-                if (!is_string($param)) {
+            if (isset($this->storage[$param])) {
+                $param = $this->storage[$param];
+
+                continue;
+            }
+
+            if (!class_exists($param)) {
+                continue;
+            }
+
+            $this->add($param);
+
+            foreach ($this->storage as $object) {
+                if ($object instanceof $param) {
+                    $param = $object;
+
                     continue;
-                }
-
-                if (isset($this->storage[$param])) {
-                    $param = $this->storage[$param];
-
-                    continue;
-                }
-
-                if (!class_exists($param)) {
-                    continue;
-                }
-
-                $this->add($param);
-
-                foreach ($this->storage as $object) {
-                    if ($object instanceof $param) {
-                        $param = $object;
-
-                        continue;
-                    }
                 }
             }
         }

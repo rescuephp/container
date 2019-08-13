@@ -10,10 +10,6 @@ use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use Rescue\Container\Container;
 
-interface TestInterface
-{
-}
-
 final class ContainerTest extends TestCase
 {
     /**
@@ -231,6 +227,11 @@ final class ContainerTest extends TestCase
         $this->assertEquals($foo, $instance);
     }
 }
+
+interface TestInterface
+{
+}
+
 
 class Foo
 {
