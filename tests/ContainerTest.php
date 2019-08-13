@@ -193,11 +193,12 @@ final class ContainerTest extends TestCase
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws ReflectionException
      */
     public function testAddByCallback(): void
     {
         $container = new Container();
-        $container->addInstance('test', static function () {
+        $container->add('test', static function () {
             return new Foo();
         });
         $instance = $container->get('test');
@@ -212,18 +213,21 @@ final class ContainerTest extends TestCase
     {
         $container = new Container();
         $container->add(Foo::class);
-        $container->addInstance(Bar::class, static function (Container $container) {
+        $container->add(Bar::class, static function (Container $container) {
             return new Bar($container->get(Foo::class));
         });
         $instance = $container->get(Bar::class);
         $this->assertInstanceOf(Bar::class, $instance);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function testAddInstance(): void
     {
         $container = new Container();
         $foo = new Foo();
-        $instance = $container->addInstance(Foo::class, $foo);
+        $instance = $container->add(Foo::class, $foo);
         $this->assertEquals($foo, $instance);
     }
 }
