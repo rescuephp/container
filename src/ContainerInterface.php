@@ -11,11 +11,25 @@ interface ContainerInterface extends PsrContainerInterfaceAlias
 {
     /**
      * @param string $id
-     * @param string|callable|object|null $class
+     * @param string|null $className
      * @param array $params
      * @return mixed
      *
      * @throws ReflectionException
      */
-    public function add(string $id, $class = null, array $params = []);
+    public function add(string $id, string $className = null, array $params = []);
+
+    /**
+     * @param string $id
+     * @param callable $callback
+     * @return mixed
+     */
+    public function addByCallback(string $id, callable $callback);
+
+    /**
+     * @param string $id
+     * @param $instance
+     * @return mixed
+     */
+    public function addByInstance(string $id, $instance);
 }

@@ -22,20 +22,24 @@ class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    public function add(string $id, $class = null, array $params = [])
+    public function add(string $id, string $className = null, array $params = [])
     {
-        $instance = null;
+        return $this->storage[$id] = $this->instance($className ?? $id, $params);
+    }
 
-        if (is_string($class)) {
-            $instance = $this->instance($class, $params);
-        } elseif (is_callable($class)) {
-            $instance = $class($this);
-        } elseif (is_object($class)) {
-            $instance = $class;
-        } else {
-            $instance = $this->instance($id, $params);
-        }
+    /**
+     * @inheritDoc
+     */
+    public function addByCallback(string $id, callable $callback)
+    {
+        return $this->storage[$id] = $callback($this);
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function addByInstance(string $id, $instance)
+    {
         return $this->storage[$id] = $instance;
     }
 
